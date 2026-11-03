@@ -1,0 +1,1046 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #080914;
+    --card: rgba(19, 21, 42, 0.78);
+    --purple: #a855f7;
+    --blue: #38bdf8;
+    --text: #f4f4ff;
+    --muted: #9295b3;
+    --border: rgba(168, 85, 247, 0.18);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background:
+        radial-gradient(circle at 15% 10%, rgba(124, 58, 237, 0.15), transparent 35%),
+        radial-gradient(circle at 90% 70%, rgba(14, 165, 233, 0.10), transparent 35%),
+        var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0 30px;
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.logo {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--purple), #4f46e5);
+    font-size: 25px;
+    font-weight: 800;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
+}
+
+.brand h1 {
+    font-size: 20px;
+    letter-spacing: 1px;
+}
+
+.brand h1 span {
+    color: var(--purple);
+}
+
+.brand p {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-top: 5px;
+}
+
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fbbf24;
+    box-shadow: 0 0 10px #fbbf24;
+}
+
+.welcome {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 38px 0 25px;
+}
+
+.welcome h2 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.welcome p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.refresh-info,
+.live-badge {
+    color: var(--blue);
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 9px 13px;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 20px;
+    background: rgba(56, 189, 248, 0.07);
+}
+
+.overview {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stat-card,
+.system-card,
+.empty-state {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    backdrop-filter: blur(16px);
+}
+
+.stat-card {
+    padding: 22px;
+    transition: 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--purple);
+    box-shadow: 0 10px 35px rgba(124, 58, 237, 0.12);
+}
+
+.card-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--muted);
+}
+
+.card-value {
+    font-size: 32px;
+    font-weight: 800;
+    margin: 18px 0 8px;
+    background: linear-gradient(90deg, #c084fc, #38bdf8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.card-description {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.panel-section {
+    margin-top: 32px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h3 {
+    font-size: 16px;
+}
+
+.view-all {
+    font-size: 9px;
+    color: var(--purple);
+    letter-spacing: 1px;
+}
+
+.system-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 16px;
+}
+
+.system-icon {
+    width: 45px;
+    height: 45px;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: rgba(168, 85, 247, 0.13);
+    color: var(--purple);
+    font-size: 25px;
+}
+
+.system-info {
+    flex: 1;
+}
+
+.system-info h4 {
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.system-info p {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.system-indicator {
+    color: #fbbf24;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 38px 15px;
+}
+
+.empty-icon {
+    font-size: 35px;
+    color: var(--purple);
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.empty-state span {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 45px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+footer span {
+    color: var(--purple);
+}
+
+@media (max-width: 700px) {
+    .app-container {
+        padding: 18px;
+    }
+
+    .overview {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 17px;
+    }
+
+    .card-value {
+        font-size: 27px;
+    }
+
+    .welcome h2 {
+        font-size: 23px;
+    }
+
+    .refresh-info {
+        font-size: 8px;
+        padding: 8px;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 380px) {
+    .brand h1 {
+        font-size: 16px;
+    }
+
+    .connection-status {
+        font-size: 8px;
+    }
+}
+
+/* ZEUS neon status indicators */
+.value-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.metric-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    min-width: 9px;
+    border-radius: 50%;
+    animation: zeusPulse 1.8s infinite;
+}
+
+.metric-dot.blue {
+    background: #38bdf8;
+    box-shadow: 0 0 9px #38bdf8;
+}
+
+.metric-dot.green {
+    background: #22c55e;
+    box-shadow: 0 0 9px #22c55e;
+}
+
+.metric-dot.red {
+    background: #ef4444;
+    box-shadow: 0 0 9px #ef4444;
+}
+
+@keyframes zeusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .45; transform: scale(.8); }
+}
+
+/* ZEUS STATUS DOT FIX */
+.value-status {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.metric-dot {
+    display: inline-block !important;
+    width: 10px !important;
+    height: 10px !important;
+    min-width: 10px !important;
+    border-radius: 50% !important;
+    flex-shrink: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.metric-dot.blue {
+    background-color: #38bdf8 !important;
+    box-shadow: 0 0 8px #38bdf8, 0 0 16px #38bdf8 !important;
+}
+
+.metric-dot.green {
+    background-color: #22c55e !important;
+    box-shadow: 0 0 8px #22c55e, 0 0 16px #22c55e !important;
+}
+
+.metric-dot.red {
+    background-color: #ef4444 !important;
+    box-shadow: 0 0 8px #ef4444, 0 0 16px #ef4444 !important;
+}
+
+/* ZEUS FINAL INDICATOR FIX */
+.value-status {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.value-status .metric-dot {
+    position: relative !important;
+    display: block !important;
+    width: 11px !important;
+    height: 11px !important;
+    min-width: 11px !important;
+    flex: 0 0 11px !important;
+    border-radius: 50% !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+}
+
+.value-status .metric-dot.blue {
+    background: #38bdf8 !important;
+    box-shadow: 0 0 5px #38bdf8, 0 0 14px #38bdf8 !important;
+}
+
+.value-status .metric-dot.green {
+    background: #22c55e !important;
+    box-shadow: 0 0 5px #22c55e, 0 0 14px #22c55e !important;
+}
+
+.value-status .metric-dot.red {
+    background: #ef4444 !important;
+    box-shadow: 0 0 5px #ef4444, 0 0 14px #ef4444 !important;
+}
+
+
+/* ZEUS NODE MONITOR CARDS */
+.nodes-section {
+    margin-top: 28px;
+    width: 100%;
+}
+
+.nodes-section .section-header {
+    margin-bottom: 16px;
+}
+
+.nodes-section .section-header h2 {
+    margin: 0;
+}
+
+.section-subtitle {
+    display: block;
+    margin-top: 5px;
+    color: #8792a8;
+    font-size: 11px;
+}
+
+.nodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.node-card {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px 18px;
+    border: 1px solid rgba(139, 92, 246, 0.22);
+    border-radius: 14px;
+    background: linear-gradient(110deg, rgba(20, 24, 43, 0.96), rgba(12, 16, 31, 0.98));
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.18);
+}
+
+.node-card-top {
+    display: flex;
+    direction: rtl;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.node-name-area {
+    display: flex;
+    direction: rtl;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.node-name {
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.node-status {
+    direction: ltr;
+    white-space: nowrap;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.node-online {
+    color: #22c55e;
+}
+
+.node-offline {
+    color: #ef4444;
+}
+
+.node-traffic {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.traffic-label {
+    color: #8792a8;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+.traffic-value {
+    color: #38bdf8;
+    font-size: 15px;
+    font-weight: 800;
+    direction: ltr;
+}
+
+.nodes-loading {
+    color: #8792a8;
+    padding: 15px;
+    text-align: center;
+}
+
+/* ZEUS ANALYTICS CHARTS */
+.charts-section {
+    margin-top: 30px;
+    padding-bottom: 25px;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.chart-card {
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid rgba(56, 189, 248, 0.18);
+    border-radius: 16px;
+    background: linear-gradient(145deg, #111827, #0b1120);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.05);
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.chart-card-header h3 {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.chart-card-header span {
+    color: #38bdf8;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 240px;
+}
+
+@media (max-width: 700px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .chart-card {
+        padding: 16px;
+    }
+
+    .chart-container {
+        height: 220px;
+    }
+}
+/* END ZEUS ANALYTICS CHARTS */
+
+
+/* ZEUS MONITOR - MENU AND PAGE LAYOUT */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.menu-button {
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(80, 130, 255, .35);
+    border-radius: 12px;
+    background: #151a32;
+    color: #62a5ff;
+    font-size: 25px;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.menu-button:hover {
+    background: #20294a;
+    box-shadow: 0 0 18px rgba(65, 130, 255, .25);
+}
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: .25s;
+}
+
+.menu-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 285px;
+    max-width: 85vw;
+    height: 100vh;
+    height: 100dvh;
+    padding: 24px 18px;
+    background: #101426;
+    border-left: 1px solid rgba(91, 130, 255, .25);
+    box-shadow: -15px 0 50px rgba(0, 0, 0, .4);
+    z-index: 1001;
+    transform: translateX(110%);
+    transition: transform .3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.side-menu.open {
+    transform: translateX(0);
+}
+
+.menu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 8px 24px;
+    color: #75aaff;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.menu-heading button {
+    border: 0;
+    background: transparent;
+    color: #aab6d5;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.menu-link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 16px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: #aeb9d5;
+    font-size: 16px;
+    text-align: right;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.menu-link:hover,
+.menu-link.active {
+    color: #fff;
+    background: linear-gradient(110deg, rgba(40, 100, 220, .22), rgba(125, 75, 220, .16));
+    border-color: rgba(90, 140, 255, .3);
+}
+
+.menu-footer {
+    margin-top: auto;
+    padding: 18px 5px;
+    color: #64708e;
+    font-size: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.page-section {
+    display: none;
+    animation: zeusFade .25s ease;
+}
+
+.page-section.active {
+    display: block;
+}
+
+@keyframes zeusFade {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.value-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.metric-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 12px currentColor;
+}
+
+.metric-dot.blue {
+    color: #479bff;
+    background: #479bff;
+}
+
+.metric-dot.green {
+    color: #35e6a1;
+    background: #35e6a1;
+}
+
+.traffic-total-card {
+    border-color: rgba(117, 91, 255, .35);
+    background: linear-gradient(135deg, rgba(48, 63, 125, .28), rgba(85, 45, 135, .2));
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.section-header h2,
+.section-header h3 {
+    margin: 0;
+}
+
+.section-subtitle {
+    color: #8491b2;
+    font-size: 12px;
+}
+
+.live-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #55e5a7;
+    background: rgba(45, 210, 145, .1);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.outages-list {
+    display: grid;
+    gap: 12px;
+}
+
+.outage-card {
+    padding: 17px;
+    border: 1px solid rgba(100, 125, 190, .2);
+    border-radius: 14px;
+    background: rgba(20, 27, 49, .8);
+}
+
+.outage-card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.outage-card-heading strong {
+    color: #e2eaff;
+}
+
+.outage-status {
+    color: #ffb36b;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.outage-details {
+    display: grid;
+    gap: 8px;
+    color: #9ba9c9;
+    font-size: 12px;
+}
+
+.outage-card p {
+    color: #8795b5;
+    font-size: 12px;
+}
+
+.empty-state {
+    padding: 30px 15px;
+    border: 1px dashed rgba(100, 125, 190, .3);
+    border-radius: 14px;
+    color: #8996b4;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .header-actions {
+        gap: 9px;
+    }
+
+    .menu-button {
+        width: 40px;
+        height: 40px;
+    }
+
+    .dashboard-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .section-header {
+        align-items: flex-start;
+    }
+}
+/* END ZEUS MENU AND PAGE LAYOUT */
+
+/* ZEUS CUSTOM NEON THEMES */
+:root {
+    --accent: #38bdf8;
+    --accent-rgb: 56, 189, 248;
+    --accent-soft: rgba(56, 189, 248, .16);
+    --accent-glow: rgba(56, 189, 248, .4);
+}
+
+body[data-theme="green"] {
+    --accent: #22e6a0;
+    --accent-rgb: 34, 230, 160;
+    --accent-soft: rgba(34, 230, 160, .16);
+    --accent-glow: rgba(34, 230, 160, .4);
+}
+
+body[data-theme="yellow"] {
+    --accent: #facc15;
+    --accent-rgb: 250, 204, 21;
+    --accent-soft: rgba(250, 204, 21, .16);
+    --accent-glow: rgba(250, 204, 21, .4);
+}
+
+body[data-theme="blue"] {
+    --accent: #38bdf8;
+    --accent-rgb: 56, 189, 248;
+    --accent-soft: rgba(56, 189, 248, .16);
+    --accent-glow: rgba(56, 189, 248, .4);
+}
+
+body[data-theme="red"] {
+    --accent: #fb4545;
+    --accent-rgb: 251, 69, 69;
+    --accent-soft: rgba(251, 69, 69, .16);
+    --accent-glow: rgba(251, 69, 69, .4);
+}
+
+body[data-theme] {
+    background:
+        radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 35%),
+        radial-gradient(circle at 90% 70%, rgba(var(--accent-rgb), .07), transparent 35%),
+        var(--bg);
+}
+
+body[data-theme] .brand h1 span,
+body[data-theme] .menu-heading,
+body[data-theme] .menu-button,
+body[data-theme] .section-subtitle {
+    color: var(--accent);
+}
+
+body[data-theme] .logo {
+    background: linear-gradient(135deg, var(--accent), #4f46e5);
+    box-shadow: 0 0 25px var(--accent-glow);
+}
+
+body[data-theme] .menu-button,
+body[data-theme] .menu-link.active,
+body[data-theme] .menu-link:hover {
+    border-color: rgba(var(--accent-rgb), .4);
+}
+
+body[data-theme] .menu-button:hover {
+    box-shadow: 0 0 18px var(--accent-glow);
+}
+
+body[data-theme] .menu-link.active,
+body[data-theme] .menu-link:hover {
+    background: linear-gradient(110deg, var(--accent-soft), rgba(125, 75, 220, .10));
+}
+
+body[data-theme] .stat-card,
+body[data-theme] .chart-card,
+body[data-theme] .node-card,
+body[data-theme] .outage-card {
+    border-color: rgba(var(--accent-rgb), .22);
+}
+
+body[data-theme] .traffic-total-card {
+    border-color: rgba(var(--accent-rgb), .45);
+    box-shadow: 0 0 20px var(--accent-soft);
+}
+
+body[data-theme] .theme-option.selected,
+body[data-theme] .language-option.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.customization-panel {
+    padding: 22px;
+}
+
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.theme-option,
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+    padding: 12px;
+    border: 1px solid rgba(130, 150, 200, .2);
+    border-radius: 12px;
+    background: rgba(20, 27, 49, .8);
+    color: #e5eaff;
+    cursor: pointer;
+    transition: .2s;
+    font: inherit;
+}
+
+.theme-option:hover,
+.language-option:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--accent-rgb), .6);
+}
+
+.theme-option.selected,
+.language-option.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.theme-preview {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    border-radius: 50%;
+}
+
+.green-theme {
+    background: #22e6a0;
+    box-shadow: 0 0 12px #22e6a0;
+}
+
+.yellow-theme {
+    background: #facc15;
+    box-shadow: 0 0 12px #facc15;
+}
+
+.blue-theme {
+    background: #38bdf8;
+    box-shadow: 0 0 12px #38bdf8;
+}
+
+.red-theme {
+    background: #fb4545;
+    box-shadow: 0 0 12px #fb4545;
+}
+
+.language-heading {
+    margin-top: 30px;
+}
+
+.language-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.language-option {
+    justify-content: center;
+}
+
+.custom-save-note {
+    margin-top: 18px;
+    color: #9295b3;
+    font-size: 12px;
+}
+
+body[dir="rtl"] .side-menu {
+    right: auto;
+    left: 0;
+    transform: translateX(-110%);
+    border-left: 0;
+    border-right: 1px solid rgba(var(--accent-rgb), .25);
+}
+
+body[dir="rtl"] .side-menu.open {
+    transform: translateX(0);
+}
+
+body[dir="rtl"] .menu-link {
+    text-align: right;
+}
+
+@media (max-width: 480px) {
+    .customization-panel {
+        padding: 15px;
+    }
+
+    .theme-options {
+        gap: 9px;
+    }
+
+    .theme-option {
+        font-size: 13px;
+    }
+}
+/* END ZEUS CUSTOM NEON THEMES */

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080914">
+    <title>ZEUS MONITOR</title>
+    <link rel="stylesheet" href="css/style.css?v=11">
+</head>
+<body>
+<div class="app-container">
+
+    <header class="header">
+        <div class="brand">
+            <div class="logo">Z</div>
+            <div>
+                <h1>ZEUS <span>MONITOR</span></h1>
+                <p>ADVANCED PANEL MONITORING</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <div class="connection-status">
+                <span class="status-dot"></span>
+                <span>CONNECTING</span>
+            </div>
+            <button class="menu-button" id="menu-button" aria-label="Open menu">☰</button>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menu-overlay"></div>
+    <nav class="side-menu" id="side-menu">
+        <div class="menu-heading">
+            <span>ZEUS MENU</span>
+            <button id="menu-close" aria-label="Close menu">×</button>
+        </div>
+        <button class="menu-link active" data-page="dashboard">⌂ <span>داشبورد</span></button>
+        <button class="menu-link" data-page="users">♙ <span>کاربران</span></button>
+        <button class="menu-link" data-page="nodes">◈ <span>نودها</span></button>
+        <button class="menu-link" data-page="charts">▥ <span>نمودارها</span></button>
+        <button class="menu-link" data-page="outages">◇ <span>تاریخچه قطعی‌ها</span></button>
+        <button class="menu-link" data-page="customization">⚙ <span>شخصی‌سازی</span></button>
+        <div class="menu-footer">ZEUS MONITOR · VERSION 1.0.0</div>
+    </nav>
+
+    <main>
+
+        <section class="page-section active" id="page-dashboard">
+            <section class="welcome">
+                <div>
+                    <h2>Dashboard</h2>
+                    <p>Welcome to Zeus Monitoring System</p>
+                </div>
+                <div class="refresh-info">LIVE MONITORING</div>
+            </section>
+
+            <section class="overview dashboard-overview">
+                <div class="stat-card">
+                    <div class="card-label">ACTIVE USERS</div>
+                    <div class="value-status">
+                        <span class="card-value" id="active-users">--</span>
+                        <span class="metric-dot blue"></span>
+                    </div>
+                    <div class="card-description">Active accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">ONLINE USERS</div>
+                    <div class="value-status">
+                        <span class="card-value" id="online-users">--</span>
+                        <span class="metric-dot green"></span>
+                    </div>
+                    <div class="card-description">Currently connected</div>
+                </div>
+            </section>
+        </section>
+
+        <section class="page-section" id="page-users">
+            <section class="welcome">
+                <div>
+                    <h2>Users</h2>
+                    <p>Panel accounts and traffic overview</p>
+                </div>
+                <div class="refresh-info">USER MANAGEMENT</div>
+            </section>
+
+            <section class="overview">
+                <div class="stat-card">
+                    <div class="card-label">TOTAL USERS</div>
+                    <div class="card-value" id="total-users">--</div>
+                    <div class="card-description">All panel accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">ACTIVE USERS</div>
+                    <div class="value-status">
+                        <span class="card-value" id="users-active">--</span>
+                        <span class="metric-dot blue"></span>
+                    </div>
+                    <div class="card-description">Active accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">ONLINE USERS</div>
+                    <div class="value-status">
+                        <span class="card-value" id="users-online">--</span>
+                        <span class="metric-dot green"></span>
+                    </div>
+                    <div class="card-description">Connected users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">EXPIRED USERS</div>
+                    <div class="card-value" id="expired-users">--</div>
+                    <div class="card-description">Expired accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">ON HOLD</div>
+                    <div class="card-value" id="on-hold-users">--</div>
+                    <div class="card-description">Accounts on hold</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">DISABLED</div>
+                    <div class="card-value" id="disabled-users">--</div>
+                    <div class="card-description">Disabled accounts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="card-label">LIMITED USERS</div>
+                    <div class="card-value" id="limited-users">--</div>
+                    <div class="card-description">Limited accounts</div>
+                </div>
+                <div class="stat-card traffic-total-card">
+                    <div class="card-label">TOTAL PANEL TRAFFIC</div>
+                    <div class="card-value" id="total-panel-traffic">--</div>
+                    <div class="card-description">Incoming + outgoing traffic</div>
+                </div>
+            </section>
+
+            <section class="panel-section">
+                <div class="section-header">
+                    <h3>System Status</h3>
+                    <span class="live-badge">LIVE</span>
+                </div>
+                <div class="system-card">
+                    <div class="system-icon">◈</div>
+                    <div class="system-info">
+                        <h4>PasarGuard Panel</h4>
+                        <p id="panel-status">Waiting for connection...</p>
+                    </div>
+                    <div class="system-indicator" id="panel-indicator">--</div>
+                </div>
+            </section>
+        </section>
+
+        <section class="page-section" id="page-nodes">
+            <section class="welcome">
+                <div>
+                    <h2>Nodes</h2>
+                    <p>Live node status and traffic</p>
+                </div>
+                <div class="refresh-info">NODE MONITOR</div>
+            </section>
+            <section class="nodes-section">
+                <div class="section-header">
+                    <h2>NODE MONITOR</h2>
+                    <span class="section-subtitle">Live node status & traffic</span>
+                </div>
+                <div id="nodes-list" class="nodes-list">
+                    <div class="nodes-loading">Loading nodes...</div>
+                </div>
+            </section>
+        </section>
+
+        <section class="page-section" id="page-charts">
+            <section class="welcome">
+                <div>
+                    <h2>Analytics</h2>
+                    <p>Historical panel statistics</p>
+                </div>
+                <div class="refresh-info">LIVE ANALYTICS</div>
+            </section>
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <article class="chart-card">
+                        <div class="chart-card-header">
+                            <h3>TRAFFIC USAGE</h3><span>IN / OUT</span>
+                        </div>
+                        <div class="chart-container"><canvas id="traffic-chart"></canvas></div>
+                    </article>
+                    <article class="chart-card">
+                        <div class="chart-card-header">
+                            <h3>NODE TRAFFIC</h3><span>PER NODE</span>
+                        </div>
+                        <div class="chart-container"><canvas id="node-chart"></canvas></div>
+                    </article>
+                    <article class="chart-card">
+                        <div class="chart-card-header">
+                            <h3>USER STATISTICS</h3><span>ACCOUNTS</span>
+                        </div>
+                        <div class="chart-container"><canvas id="users-chart"></canvas></div>
+                    </article>
+                    <article class="chart-card">
+                        <div class="chart-card-header">
+                            <h3>SERVER RESOURCES</h3><span>CPU / RAM</span>
+                        </div>
+                        <div class="chart-container"><canvas id="resources-chart"></canvas></div>
+                    </article>
+                </div>
+            </section>
+        </section>
+
+        <section class="page-section" id="page-outages">
+            <section class="welcome">
+                <div>
+                    <h2>Outage History</h2>
+                    <p>Service interruptions and recovery records</p>
+                </div>
+                <div class="refresh-info">EVENT HISTORY</div>
+            </section>
+            <section class="panel-section">
+                <div class="section-header">
+                    <h3>RECENT OUTAGES</h3>
+                    <span class="live-badge">LAST 100</span>
+                </div>
+                <div id="outages-list" class="outages-list">
+                    <div class="nodes-loading">Loading outage history...</div>
+                </div>
+            </section>
+        </section>
+
+
+        <section class="page-section" id="page-customization">
+            <section class="welcome">
+                <div>
+                    <h2 id="custom-title">Customization</h2>
+                    <p id="custom-subtitle">Personalize your ZEUS experience</p>
+                </div>
+            </section>
+
+            <section class="panel-section customization-panel">
+                <div class="section-header">
+                    <h3 id="theme-title">Neon Theme Color</h3>
+                </div>
+                <div class="theme-options">
+                    <button class="theme-option" data-theme="green">
+                        <span class="theme-preview green-theme"></span>
+                        <span data-i18n="green">سبز نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="yellow">
+                        <span class="theme-preview yellow-theme"></span>
+                        <span data-i18n="yellow">زرد نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="blue">
+                        <span class="theme-preview blue-theme"></span>
+                        <span data-i18n="blue">آبی نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="red">
+                        <span class="theme-preview red-theme"></span>
+                        <span data-i18n="red">قرمز نئونی</span>
+                    </button>
+                </div>
+
+                <div class="section-header language-heading">
+                    <h3 id="language-title">Language / زبان</h3>
+                </div>
+                <div class="language-options">
+                    <button class="language-option" data-language="fa">🇮🇷 فارسی</button>
+                    <button class="language-option" data-language="en">🇬🇧 English</button>
+                </div>
+                <p class="custom-save-note" id="custom-save-note">تنظیمات به‌صورت خودکار ذخیره می‌شوند.</p>
+            </section>
+        </section>
+
+        <footer>
+            <p>ZEUS MONITOR <span>•</span> VERSION 1.0.0</p>
+            <p>POWERED BY ZEUS</p>
+        </footer>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/app.js?v=11"></script>
+</body>
+</html>
