@@ -4,6 +4,6 @@ uvicorn[standard]
 httpx
 requests
 python-dotenv
-sqlalchemy
+sqlalchemy[asyncio]
 aiosqlite
 pydantic-settings
