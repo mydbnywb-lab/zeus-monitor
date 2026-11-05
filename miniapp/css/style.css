@@ -1044,3 +1044,406 @@ body[dir="rtl"] .menu-link {
     }
 }
 /* END ZEUS CUSTOM NEON THEMES */
+
+/* ZEUS V2 - Node Health Score */
+.health-card .health-progress {
+    width: 100%;
+    height: 5px;
+    margin-top: 14px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.health-card #health-progress-bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.4s ease, background-color 0.4s ease;
+}
+
+.health-card #health-score {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+
+/* ZEUS V2 - Health card improvements */
+.dashboard-overview .health-card {
+    grid-column: 1 / -1;
+    margin-top: 0;
+}
+
+.health-card .health-progress {
+    height: 11px;
+    margin-top: 18px;
+    border-radius: 6px;
+}
+
+.health-card #health-progress-bar {
+    background-image: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 9px,
+        rgba(10, 15, 25, 0.85) 9px,
+        rgba(10, 15, 25, 0.85) 12px
+    );
+}
+
+/* ZEUS V2 - Final health card spacing fix */
+#page-dashboard .dashboard-overview {
+    row-gap: 16px !important;
+    column-gap: 16px !important;
+}
+
+#page-dashboard .dashboard-overview .health-card {
+    grid-column: 1 / -1 !important;
+    margin: 0 !important;
+    align-self: stretch;
+}
+
+
+/* ZEUS V2 - Additional Neon Themes */
+body[data-theme="purple"] {
+    --accent: #a855f7;
+    --accent-rgb: 168, 85, 247;
+    --accent-soft: rgba(168, 85, 247, .16);
+    --accent-glow: rgba(168, 85, 247, .4);
+}
+body[data-theme="pink"] {
+    --accent: #ec4899;
+    --accent-rgb: 236, 72, 153;
+    --accent-soft: rgba(236, 72, 153, .16);
+    --accent-glow: rgba(236, 72, 153, .4);
+}
+body[data-theme="orange"] {
+    --accent: #f97316;
+    --accent-rgb: 249, 115, 22;
+    --accent-soft: rgba(249, 115, 22, .16);
+    --accent-glow: rgba(249, 115, 22, .4);
+}
+body[data-theme="cyan"] {
+    --accent: #06b6d4;
+    --accent-rgb: 6, 182, 212;
+    --accent-soft: rgba(6, 182, 212, .16);
+    --accent-glow: rgba(6, 182, 212, .4);
+}
+body[data-theme="gold"] {
+    --accent: #facc15;
+    --accent-rgb: 250, 204, 21;
+    --accent-soft: rgba(250, 204, 21, .16);
+    --accent-glow: rgba(250, 204, 21, .4);
+}
+body[data-theme="white"] {
+    --accent: #e5e7eb;
+    --accent-rgb: 229, 231, 235;
+    --accent-soft: rgba(229, 231, 235, .16);
+    --accent-glow: rgba(229, 231, 235, .4);
+}
+
+.purple-theme { background: #a855f7; box-shadow: 0 0 12px #a855f7; }
+.pink-theme { background: #ec4899; box-shadow: 0 0 12px #ec4899; }
+.orange-theme { background: #f97316; box-shadow: 0 0 12px #f97316; }
+.cyan-theme { background: #06b6d4; box-shadow: 0 0 12px #06b6d4; }
+.gold-theme { background: #facc15; box-shadow: 0 0 12px #facc15; }
+.white-theme { background: #e5e7eb; box-shadow: 0 0 12px #e5e7eb; }
+
+.theme-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+.theme-actions button {
+    flex: 1;
+    min-height: 44px;
+    padding: 10px 16px;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent);
+    color: #101426;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+.theme-actions #theme-cancel {
+    background: transparent;
+    color: var(--accent);
+}
+
+
+
+/* ZEUS WELCOME MESSAGE EDITOR */
+#welcome-message {
+    width: 100%;
+    min-height: 150px;
+    padding: 14px;
+    margin-top: 12px;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.8;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+#welcome-message:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.welcome-message-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.welcome-message-actions button {
+    flex: 1 1 130px;
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.welcome-message-actions button:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+#welcome-preview-box {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: inherit;
+    line-height: 1.8;
+}
+
+#welcome-status {
+    min-height: 24px;
+    margin-top: 10px;
+    font-size: 13px;
+}
+/* END ZEUS WELCOME MESSAGE EDITOR */
+
+/* ZEUS NEON FLOW */
+@property --zeus-neon-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+}
+
+@keyframes zeusNeonFlow {
+    to {
+        --zeus-neon-angle: 360deg;
+    }
+}
+
+body[data-theme] .stat-card,
+body[data-theme] .system-card,
+body[data-theme] .chart-card,
+body[data-theme] .node-card,
+body[data-theme] .outage-card,
+body[data-theme] .health-card {
+    position: relative;
+    isolation: isolate;
+}
+
+body[data-theme] .stat-card::after,
+body[data-theme] .system-card::after,
+body[data-theme] .chart-card::after,
+body[data-theme] .node-card::after,
+body[data-theme] .outage-card::after,
+body[data-theme] .health-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(
+        from var(--zeus-neon-angle),
+        transparent 0deg 285deg,
+        var(--accent-soft) 310deg,
+        var(--accent) 330deg,
+        transparent 355deg
+    );
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 5;
+    filter: drop-shadow(0 0 3px var(--accent));
+    animation: zeusNeonFlow 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body[data-theme] .stat-card::after,
+    body[data-theme] .system-card::after,
+    body[data-theme] .chart-card::after,
+    body[data-theme] .node-card::after,
+    body[data-theme] .outage-card::after,
+    body[data-theme] .health-card::after {
+        animation: none;
+    }
+}
+
+
+/* ZEUS PANEL SETTINGS */
+#panel-settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+#panel-settings-form label {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#panel-settings-form input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    outline: none;
+    direction: ltr;
+    text-align: left;
+}
+
+#panel-settings-form input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-soft);
+}
+
+#panel-settings-save {
+    padding: 13px;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#panel-settings-save:disabled {
+    opacity: .5;
+    cursor: wait;
+}
+
+#panel-settings-status {
+    font-size: 13px;
+    margin-top: 5px;
+}
+/* END ZEUS PANEL SETTINGS */
+
+/* ZEUS PUBLIC NOTIFICATION CARD */
+#page-notifications .customization-panel {
+    border: 1px solid var(--accent-soft);
+    border-radius: 18px;
+    padding: 22px;
+    background: var(--card-bg, rgba(20, 25, 35, .85));
+    box-shadow: 0 0 18px var(--accent-soft);
+}
+
+#public-alert-form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    margin-top: 18px;
+}
+
+#public-alert-form label {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+#public-alert-chat {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    background: var(--input-bg, rgba(0,0,0,.2));
+    color: var(--text-primary);
+    outline: none;
+    direction: ltr;
+    text-align: left;
+}
+
+#public-alert-chat:focus {
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+#public-alert-save {
+    min-height: 46px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s;
+}
+
+#public-alert-save:hover {
+    filter: brightness(1.12);
+    box-shadow: 0 0 14px var(--accent-glow);
+}
+
+#public-alert-status {
+    min-height: 22px;
+    margin: 4px 0;
+    color: var(--accent);
+    text-align: center;
+}
+
+#page-notifications .customization-panel > p {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    line-height: 1.8;
+}
+
+#public-alert-test {
+    min-height: 46px;
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--accent);
+    font-weight: 800;
+    cursor: pointer;
+    transition: .2s;
+}
+
+#public-alert-test:hover {
+    background: var(--accent-soft);
+    box-shadow: 0 0 14px var(--accent-glow);
+}
+
+#public-alert-test:disabled,
+#public-alert-save:disabled {
+    opacity: .55;
+    cursor: wait;
+}
