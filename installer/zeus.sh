@@ -226,7 +226,7 @@ update_zeus() {
         return
     fi
 
-    git -C "$PROJECT_DIR" pull --ff-only || {
+    git -C "$PROJECT_DIR" fetch origin main && git -C "$PROJECT_DIR" checkout -B main origin/main || {
         echo "Git update failed."
         pause
         return
