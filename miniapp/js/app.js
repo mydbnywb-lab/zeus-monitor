@@ -12,6 +12,24 @@ async function loadDashboard() {
         document.getElementById("total-users").textContent = data.users.total;
         document.getElementById("active-users").textContent = data.users.active;
         document.getElementById("online-users").textContent = data.users.online;
+        const health = data.health || {};
+        const scoreEl = document.getElementById("health-score");
+        const barEl = document.getElementById("health-progress-bar");
+        const statusEl = document.getElementById("health-status");
+
+        if (scoreEl && barEl && statusEl) {
+            const score = health.score;
+            const color = health.color || "unknown";
+            scoreEl.textContent = score === null || score === undefined ? "--" : score;
+            scoreEl.style.color = color;
+            barEl.style.width = score === null || score === undefined ? "0%" : score + "%";
+            barEl.style.backgroundColor = color;
+            statusEl.textContent = score === null || score === undefined
+                ? "No nodes available"
+                : color === "green" ? "Healthy"
+                : color === "yellow" ? "Warning" : "Critical";
+        }
+
         const onlineNodes = document.getElementById("online-nodes");
         if (onlineNodes) onlineNodes.textContent = data.nodes.online;
         const offlineNodes = document.getElementById("offline-nodes");
@@ -320,16 +338,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             closeMenu();
 
-            if (page === "outages") loadOutages();
             if (page === "users" || page === "nodes") loadDashboard();
             if (page === "charts") loadAnalytics();
         });
     });
 
     loadUserDetails();
-    loadOutages();
     setInterval(loadUserDetails, 30000);
-    setInterval(loadOutages, 60000);
 });
 
 async function loadUserDetails() {
@@ -429,10 +444,13 @@ const zeusTranslations = {
         charts: "نمودارها",
         outages: "تاریخچه قطعی‌ها",
         customization: "شخصی‌سازی",
+        panelSettings: "اطلاعات پنل",
+        notifications: "اطلاع‌رسانی",
         dashboardTitle: "داشبورد",
         dashboardDesc: "نمای کلی وضعیت سرور",
         active: "کاربران فعال",
         online: "کاربران آنلاین",
+        healthScore: "امتیاز سلامت نودها",
         total: "کل کاربران",
         expired: "کاربران منقضی",
         hold: "در انتظار",
@@ -454,6 +472,14 @@ const zeusTranslations = {
         yellow: "زرد نئونی",
         blue: "آبی نئونی",
         red: "قرمز نئونی",
+        purple: "بنفش نئونی",
+        pink: "صورتی نئونی",
+        orange: "نارنجی نئونی",
+        cyan: "فیروزه‌ای نئونی",
+        gold: "طلایی",
+        white: "سفید",
+        applyTheme: "اعمال رنگ",
+        cancelTheme: "لغو",
         saved: "تنظیمات به‌صورت خودکار ذخیره می‌شوند.",
         started: "شروع:",
         recovered: "بازیابی:",
@@ -479,10 +505,13 @@ const zeusTranslations = {
         charts: "Charts",
         outages: "Outage History",
         customization: "Customization",
+        panelSettings: "Panel Settings",
+        notifications: "Notifications",
         dashboardTitle: "Dashboard",
         dashboardDesc: "Server status overview",
         active: "Active Users",
         online: "Online Users",
+        healthScore: "NODE HEALTH SCORE",
         total: "Total Users",
         expired: "Expired Users",
         hold: "On Hold",
@@ -504,6 +533,14 @@ const zeusTranslations = {
         yellow: "Neon Yellow",
         blue: "Neon Blue",
         red: "Neon Red",
+        purple: "Neon Purple",
+        pink: "Neon Pink",
+        orange: "Neon Orange",
+        cyan: "Neon Cyan",
+        gold: "Gold",
+        white: "White",
+        applyTheme: "Apply Theme",
+        cancelTheme: "Cancel",
         saved: "Settings are saved automatically.",
         started: "Started:",
         recovered: "Recovered:",
@@ -524,16 +561,31 @@ const zeusTranslations = {
     }
 };
 
-function applyZeusTheme(theme) {
-    const allowed = ["green", "yellow", "blue", "red"];
-    if (!allowed.includes(theme)) theme = "blue";
+const ZEUS_THEMES = ["green", "blue", "purple", "red", "pink", "orange", "cyan", "gold", "white"];
+let savedZeusTheme = "blue";
+let pendingZeusTheme = "blue";
+
+function setZeusTheme(theme) {
+    if (theme === "yellow") theme = "gold";
+    if (!ZEUS_THEMES.includes(theme)) theme = "blue";
 
     document.body.dataset.theme = theme;
-    localStorage.setItem("zeus-theme", theme);
-
     document.querySelectorAll(".theme-option").forEach(button => {
         button.classList.toggle("selected", button.dataset.theme === theme);
     });
+    return theme;
+}
+
+function applyZeusTheme(theme) {
+    savedZeusTheme = setZeusTheme(theme);
+    pendingZeusTheme = savedZeusTheme;
+    localStorage.setItem("zeus-theme", savedZeusTheme);
+}
+
+function previewZeusTheme(theme) {
+    if (!ZEUS_THEMES.includes(theme)) return;
+    pendingZeusTheme = theme;
+    setZeusTheme(theme);
 }
 
 function applyZeusLanguage(language) {
@@ -553,15 +605,19 @@ function applyZeusLanguage(language) {
     };
 
     const menuLabels = document.querySelectorAll(".menu-link span");
-    const menuKeys = ["dashboard", "users", "nodes", "charts", "outages", "customization"];
+    const menuKeys = ["dashboard", "users", "nodes", "charts", "customization", "panelSettings", "notifications"];
     menuLabels.forEach((element, index) => {
         if (menuKeys[index]) element.textContent = t[menuKeys[index]];
     });
 
     setText("#custom-title", t.customizationTitle);
+    setText("#page-panel-settings .welcome h2", t.panelSettings);
+    setText("#page-notifications .welcome h2", t.notifications);
     setText("#custom-subtitle", t.customizationDesc);
     setText("#theme-title", t.theme);
     setText("#language-title", t.language);
+    setText("#theme-apply", t.applyTheme);
+    setText("#theme-cancel", t.cancelTheme);
     setText("#custom-save-note", t.saved);
 
     setText("#page-dashboard .welcome h2", t.dashboardTitle);
@@ -579,6 +635,7 @@ function applyZeusLanguage(language) {
     const cardLabels = {
         "#page-dashboard .stat-card:nth-child(1) .card-label": t.active,
         "#page-dashboard .stat-card:nth-child(2) .card-label": t.online,
+        "#page-dashboard .health-card .card-label": t.healthScore,
         "#page-users .stat-card:nth-child(1) .card-label": t.total,
         "#page-users .stat-card:nth-child(2) .card-label": t.active,
         "#page-users .stat-card:nth-child(3) .card-label": t.online,
@@ -623,8 +680,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".theme-option").forEach(button => {
         button.addEventListener("click", () => {
-            applyZeusTheme(button.dataset.theme);
+            previewZeusTheme(button.dataset.theme);
         });
+    });
+
+    document.getElementById("theme-apply")?.addEventListener("click", () => {
+        applyZeusTheme(pendingZeusTheme);
+    });
+
+    document.getElementById("theme-cancel")?.addEventListener("click", () => {
+        pendingZeusTheme = savedZeusTheme;
+        setZeusTheme(savedZeusTheme);
     });
 
     document.querySelectorAll(".language-option").forEach(button => {
@@ -634,3 +700,193 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 /* END ZEUS CUSTOMIZATION ENGINE */
+
+
+// ZEUS WELCOME MESSAGE EDITOR
+document.addEventListener("DOMContentLoaded", () => {
+    const textarea = document.getElementById("welcome-message");
+    const preview = document.getElementById("welcome-preview-box");
+    const status = document.getElementById("welcome-status");
+
+    if (!textarea || !preview || !status) return;
+
+    const showStatus = (message, success = true) => {
+        status.textContent = message;
+        status.style.color = success ? "var(--accent)" : "#ff5252";
+    };
+
+    async function loadWelcomeMessage() {
+        try {
+            const response = await fetch("/api/settings/welcome");
+            if (!response.ok) throw new Error("Load failed");
+            const data = await response.json();
+            textarea.value = data.message || "";
+        } catch (error) {
+            showStatus("خطا در دریافت پیام از سرور", false);
+        }
+    }
+
+    document.getElementById("welcome-preview")?.addEventListener("click", () => {
+        preview.textContent = textarea.value;
+        preview.hidden = false;
+    });
+
+    document.getElementById("welcome-save")?.addEventListener("click", async () => {
+        const message = textarea.value;
+        if (!message.trim()) {
+            showStatus("متن پیام نمی‌تواند خالی باشد.", false);
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/settings/welcome", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message })
+            });
+
+            if (!response.ok) throw new Error("Save failed");
+            showStatus("پیام خوشامدگویی با موفقیت ذخیره شد.");
+        } catch (error) {
+            showStatus("خطا در ذخیره پیام.", false);
+        }
+    });
+
+    document.getElementById("welcome-reset")?.addEventListener("click", async () => {
+        if (!confirm("پیام خوشامدگویی به حالت پیش‌فرض برگردد؟")) return;
+
+        try {
+            const response = await fetch("/api/settings/welcome/reset", {
+                method: "POST"
+            });
+
+            if (!response.ok) throw new Error("Reset failed");
+
+            const data = await response.json();
+            textarea.value = data.message || "";
+            preview.hidden = true;
+            showStatus("پیام به حالت پیش‌فرض بازگردانده شد.");
+        } catch (error) {
+            showStatus("خطا در بازگردانی پیام.", false);
+        }
+    });
+
+    loadWelcomeMessage();
+});
+// END ZEUS WELCOME MESSAGE EDITOR
+
+// ZEUS PANEL SETTINGS
+document.addEventListener("DOMContentLoaded", () => {
+    const url = document.getElementById("panel-url");
+    const interval = document.getElementById("panel-interval");
+    const key = document.getElementById("panel-api-key");
+    const save = document.getElementById("panel-settings-save");
+    const status = document.getElementById("panel-settings-status");
+
+    if (!url || !interval || !key || !save || !status) return;
+
+    async function loadPanelSettings() {
+        try {
+            const response = await fetch("/api/settings/panel");
+            if (!response.ok) throw new Error();
+            const data = await response.json();
+            url.value = data.panel_url || "";
+            interval.value = data.check_interval || 60;
+            key.placeholder = data.api_key_configured
+                ? "کلید فعلی تنظیم شده؛ برای حفظ آن خالی بگذارید"
+                : "API Key / Token";
+        } catch {
+            status.textContent = "خطا در دریافت اطلاعات پنل";
+        }
+    }
+
+
+    const test = document.getElementById("public-alert-test");
+
+    if (test) {
+        test.addEventListener("click", async () => {
+            test.disabled = true;
+            status.textContent = "🧪 در حال ارسال پیام آزمایشی...";
+
+            try {
+                const response = await fetch("/api/settings/public-alert/test", {
+                    method: "POST"
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || "ارسال ناموفق بود");
+                status.textContent = "✅ پیام آزمایشی با موفقیت ارسال شد.";
+            } catch (error) {
+                status.textContent = "❌ " + error.message;
+            } finally {
+                test.disabled = false;
+            }
+        });
+    }
+
+    save.addEventListener("click", async () => {
+        status.textContent = "در حال ذخیره...";
+        save.disabled = true;
+
+        try {
+            const response = await fetch("/api/settings/panel", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    panel_url: url.value.trim(),
+                    check_interval: Number(interval.value),
+                    api_key: key.value || null
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || "خطا در ذخیره");
+
+            key.value = "";
+            status.textContent = "تنظیمات با موفقیت ذخیره شد. برای اعمال کامل، سرویس‌ها باید راه‌اندازی مجدد شوند.";
+            status.style.color = "var(--accent)";
+        } catch (error) {
+            status.textContent = error.message || "خطا در ذخیره تنظیمات";
+            status.style.color = "#ff5252";
+        } finally {
+            save.disabled = false;
+        }
+    });
+
+    loadPanelSettings();
+});
+// END ZEUS PANEL SETTINGS
+
+// ZEUS PUBLIC ALERT SETTINGS
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("public-alert-chat");
+    const save = document.getElementById("public-alert-save");
+    const status = document.getElementById("public-alert-status");
+
+    if (!input || !save || !status) return;
+
+    fetch("/api/settings/public-alert")
+        .then(r => r.json())
+        .then(data => { input.value = data.chat || ""; })
+        .catch(() => { status.textContent = "خطا در دریافت تنظیمات"; });
+
+    save.addEventListener("click", async () => {
+        save.disabled = true;
+        status.textContent = "در حال ذخیره...";
+
+        try {
+            const response = await fetch("/api/settings/public-alert", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat: input.value.trim() })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || "خطا در ذخیره");
+
+            status.textContent = "✅ تنظیمات اطلاع‌رسانی ذخیره شد.";
+        } catch (error) {
+            status.textContent = "❌ " + error.message;
+        } finally {
+            save.disabled = false;
+        }
+    });
+});

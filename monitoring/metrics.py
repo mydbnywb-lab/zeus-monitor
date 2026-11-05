@@ -8,6 +8,7 @@ import httpx
 from config.settings import CHECK_INTERVAL, PANEL_URL, PANEL_API_KEY
 from database.db import AsyncSessionLocal
 from database.models import MetricSnapshot
+from monitoring.outages import record_status
 
 logger = logging.getLogger("ZEUS.METRICS")
 
@@ -40,6 +41,15 @@ async def collect_metrics():
         }
         for node in nodes
     ]
+
+    for node in nodes:
+        name = str(node.get("name") or "Unknown Node")
+        status = str(node.get("status") or "").strip().lower()
+
+        if status in {"connected", "online", "running"}:
+            await record_status(f"node:{name}", True, status)
+        elif status in {"disconnected", "offline", "stopped"}:
+            await record_status(f"node:{name}", False, status)
 
     snapshot = MetricSnapshot(
         recorded_at=datetime.now(timezone.utc),

@@ -9,9 +9,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from config.settings import PANEL_URL, PANEL_API_KEY
+from config.settings import PANEL_URL, PANEL_API_KEY, BOT_TOKEN
 from database.db import init_db, close_db, AsyncSessionLocal
-from database.models import MetricSnapshot, OutageHistory
+from database.models import MetricSnapshot, OutageHistory, AppSetting
 from sqlalchemy import select
 from monitoring.metrics import metrics_loop
 
@@ -81,6 +81,17 @@ async def dashboard_data():
             )
             offline_nodes = len(node_list) - online_nodes
 
+            health_score = (
+                round(online_nodes / len(node_list) * 100)
+                if node_list else None
+            )
+            health_color = (
+                "green" if health_score is not None and health_score >= 80
+                else "yellow" if health_score is not None and health_score >= 50
+                else "red" if health_score is not None
+                else "unknown"
+            )
+
         return {
             "status": "online",
             "panel_version": system.get("version"),
@@ -104,6 +115,10 @@ async def dashboard_data():
                 "disk_used": system.get("disk_used", 0),
                 "disk_total": system.get("disk_total", 0),
                 "uptime": system.get("uptime_seconds", 0),
+            },
+            "health": {
+                "score": health_score,
+                "color": health_color,
             },
             "nodes": {
                 "status": "online",
@@ -185,6 +200,13 @@ async def analytics_data(range: str = "24h"):
 
 
 
+DEFAULT_WELCOME_MESSAGE = (
+    "⚡ <b>WELCOME TO ZEUS MONITOR</b>\n\n"
+    "🟢 Monitoring system is ready.\n"
+    "📊 Open your dashboard using the button below."
+)
+
+
 @app.get("/api/outages")
 async def outage_history():
     async with AsyncSessionLocal() as session:
@@ -213,3 +235,223 @@ async def outage_history():
             for item in records
         ],
     }
+
+
+
+@app.get("/api/settings/panel")
+async def get_panel_settings():
+    from config import settings as cfg
+    return {
+        "panel_url": cfg.PANEL_URL,
+        "check_interval": cfg.CHECK_INTERVAL,
+        "api_key_configured": bool(cfg.PANEL_API_KEY),
+    }
+
+
+@app.put("/api/settings/panel")
+async def save_panel_settings(payload: dict):
+    from config import settings as cfg
+    from pathlib import Path
+    import os
+    import re
+
+    panel_url = payload.get("panel_url")
+    interval = payload.get("check_interval")
+    api_key = payload.get("api_key")
+
+    if not isinstance(panel_url, str) or not panel_url.strip().startswith(("http://", "https://")):
+        raise HTTPException(status_code=400, detail="Invalid panel URL")
+    if not isinstance(interval, int) or interval < 10 or interval > 3600:
+        raise HTTPException(status_code=400, detail="Interval must be between 10 and 3600 seconds")
+    if api_key is not None and (not isinstance(api_key, str) or len(api_key) > 500):
+        raise HTTPException(status_code=400, detail="Invalid API key")
+
+    env_path = BASE_DIR / ".env"
+    content = env_path.read_text() if env_path.exists() else ""
+
+    updates = {
+        "PANEL_URL": panel_url.strip().rstrip("/"),
+        "CHECK_INTERVAL": str(interval),
+    }
+    if api_key:
+        updates["PANEL_API_KEY"] = api_key.strip()
+
+    for key, value in updates.items():
+        line = f"{key}={value}"
+        pattern = rf"(?m)^{re.escape(key)}=.*$"
+        if re.search(pattern, content):
+            content = re.sub(pattern, lambda _: line, content)
+        else:
+            content += ("\n" if content and not content.endswith("\n") else "") + line + "\n"
+
+    env_path.write_text(content)
+    os.chmod(env_path, 0o600)
+
+    cfg.PANEL_URL = updates["PANEL_URL"]
+    cfg.CHECK_INTERVAL = interval
+    if api_key:
+        cfg.PANEL_API_KEY = api_key.strip()
+
+    import sys
+    for module_name in (
+        "backend.main",
+        "monitoring.metrics",
+        "monitoring.worker",
+        "monitoring.checker",
+        "monitoring.node_alerts",
+        "monitoring.pasarguard",
+    ):
+        module = sys.modules.get(module_name)
+        if module:
+            if hasattr(module, "PANEL_URL"):
+                module.PANEL_URL = cfg.PANEL_URL
+            if hasattr(module, "PANEL_API_KEY"):
+                module.PANEL_API_KEY = cfg.PANEL_API_KEY
+            if hasattr(module, "CHECK_INTERVAL"):
+                module.CHECK_INTERVAL = cfg.CHECK_INTERVAL
+
+    return {"ok": True, "panel_url": cfg.PANEL_URL, "check_interval": cfg.CHECK_INTERVAL}
+
+
+
+@app.get("/api/settings/public-alert")
+async def get_public_alert_settings():
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(AppSetting).where(AppSetting.key == "public_alert_chat")
+        )
+        setting = result.scalar_one_or_none()
+        return {"chat": setting.value if setting else ""}
+
+
+@app.put("/api/settings/public-alert")
+async def save_public_alert_settings(payload: dict):
+    import re
+    from urllib.parse import urlparse
+
+    chat = payload.get("chat", "")
+    if not isinstance(chat, str) or len(chat) > 300:
+        raise HTTPException(status_code=400, detail="Invalid destination")
+
+    chat = chat.strip()
+    if chat.startswith(("https://t.me/", "http://t.me/")):
+        path = urlparse(chat).path.strip("/").split("/")
+        if not path or path[0].startswith(("+", "joinchat")):
+            raise HTTPException(
+                status_code=400,
+                detail="Private invite links are not supported; enter the numeric chat ID."
+            )
+        if path[0] == "c" and len(path) > 1 and path[1].isdigit():
+            chat = "-100" + path[1]
+        else:
+            chat = "@" + path[0]
+
+    if chat and not (
+        re.fullmatch(r"@[A-Za-z0-9_]{5,}", chat)
+        or re.fullmatch(r"-100\d+", chat)
+    ):
+        raise HTTPException(
+            status_code=400,
+            detail="Enter a public Telegram link, @username, or numeric channel/group ID."
+        )
+
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(AppSetting).where(AppSetting.key == "public_alert_chat")
+        )
+        setting = result.scalar_one_or_none()
+        if setting:
+            setting.value = chat
+        else:
+            db.add(AppSetting(key="public_alert_chat", value=chat))
+        await db.commit()
+
+    return {"ok": True, "configured": bool(chat)}
+
+
+
+@app.post("/api/settings/public-alert/test")
+async def test_public_alert():
+    if not BOT_TOKEN:
+        raise HTTPException(status_code=500, detail="Bot token is not configured")
+
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(
+            select(AppSetting).where(AppSetting.key == "public_alert_chat")
+        )
+        setting = result.scalar_one_or_none()
+        chat = setting.value if setting else ""
+
+    if not chat:
+        raise HTTPException(status_code=400, detail="ابتدا مقصد تلگرام را ذخیره کنید.")
+
+    message = (
+        "🧪✅ <b>پیام آزمایشی ZEUS MONITOR</b>\n"
+        "━━━━━━━━━━━━━━━━━━\n"
+        "📡 اتصال ربات به مقصد اطلاع‌رسانی برقرار است.\n"
+        "🔔 هشدارهای قطعی و بازیابی نود از این پس در این مقصد ارسال می‌شوند.\n"
+        "🛡 <i>ZEUS MONITOR</i>"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                json={"chat_id": chat, "text": message, "parse_mode": "HTML"}
+            )
+            data = response.json()
+        if not response.is_success or not data.get("ok"):
+            detail = data.get("description", "ارسال پیام ناموفق بود.")
+            raise HTTPException(status_code=400, detail=detail)
+    except httpx.RequestError:
+        raise HTTPException(status_code=502, detail="ارتباط با تلگرام برقرار نشد.")
+
+    return {"ok": True, "sent": True}
+
+
+@app.get("/api/settings/welcome")
+async def get_welcome_message():
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(AppSetting).where(AppSetting.key == "welcome_message")
+        )
+        setting = result.scalar_one_or_none()
+    return {
+        "message": setting.value if setting else DEFAULT_WELCOME_MESSAGE,
+        "default_message": DEFAULT_WELCOME_MESSAGE,
+    }
+
+
+@app.put("/api/settings/welcome")
+async def save_welcome_message(payload: dict):
+    message = payload.get("message")
+    if not isinstance(message, str) or not message.strip():
+        raise HTTPException(status_code=400, detail="Message cannot be empty")
+    if len(message) > 3500:
+        raise HTTPException(status_code=400, detail="Message is too long")
+
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(AppSetting).where(AppSetting.key == "welcome_message")
+        )
+        setting = result.scalar_one_or_none()
+        if setting:
+            setting.value = message
+        else:
+            session.add(AppSetting(key="welcome_message", value=message))
+        await session.commit()
+
+    return {"ok": True, "message": message}
+
+
+@app.post("/api/settings/welcome/reset")
+async def reset_welcome_message():
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(AppSetting).where(AppSetting.key == "welcome_message")
+        )
+        setting = result.scalar_one_or_none()
+        if setting:
+            await session.delete(setting)
+            await session.commit()
+    return {"ok": True, "message": DEFAULT_WELCOME_MESSAGE}

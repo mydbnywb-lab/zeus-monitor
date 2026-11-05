@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#080914">
     <title>ZEUS MONITOR</title>
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=12">
 </head>
 <body>
 <div class="app-container">
@@ -38,9 +38,10 @@
         <button class="menu-link" data-page="users">♙ <span>کاربران</span></button>
         <button class="menu-link" data-page="nodes">◈ <span>نودها</span></button>
         <button class="menu-link" data-page="charts">▥ <span>نمودارها</span></button>
-        <button class="menu-link" data-page="outages">◇ <span>تاریخچه قطعی‌ها</span></button>
         <button class="menu-link" data-page="customization">⚙ <span>شخصی‌سازی</span></button>
-        <div class="menu-footer">ZEUS MONITOR · VERSION 1.0.0</div>
+        <button class="menu-link" data-page="panel-settings">🔧 <span>اطلاعات پنل</span></button>
+        <button class="menu-link" data-page="notifications">🔔 <span>اطلاع‌رسانی</span></button>
+        <div class="menu-footer">ZEUS MONITOR · VERSION 2.0.0</div>
     </nav>
 
     <main>
@@ -71,8 +72,20 @@
                     </div>
                     <div class="card-description">Currently connected</div>
                 </div>
+
+                <div class="stat-card health-card">
+                    <div class="card-label">NODE HEALTH SCORE</div>
+                    <div class="value-status">
+                        <span class="card-value" id="health-score">--</span>
+                        <span class="card-description">/ 100</span>
+                    </div>
+                    <div class="health-progress">
+                        <div id="health-progress-bar"></div>
+                    </div>
+                    <div class="card-description" id="health-status">Waiting for data</div>
+                </div>
             </section>
-        </section>
+</section>
 
         <section class="page-section" id="page-users">
             <section class="welcome">
@@ -205,24 +218,7 @@
             </section>
         </section>
 
-        <section class="page-section" id="page-outages">
-            <section class="welcome">
-                <div>
-                    <h2>Outage History</h2>
-                    <p>Service interruptions and recovery records</p>
-                </div>
-                <div class="refresh-info">EVENT HISTORY</div>
-            </section>
-            <section class="panel-section">
-                <div class="section-header">
-                    <h3>RECENT OUTAGES</h3>
-                    <span class="live-badge">LAST 100</span>
-                </div>
-                <div id="outages-list" class="outages-list">
-                    <div class="nodes-loading">Loading outage history...</div>
-                </div>
-            </section>
-        </section>
+
 
 
         <section class="page-section" id="page-customization">
@@ -242,10 +238,6 @@
                         <span class="theme-preview green-theme"></span>
                         <span data-i18n="green">سبز نئونی</span>
                     </button>
-                    <button class="theme-option" data-theme="yellow">
-                        <span class="theme-preview yellow-theme"></span>
-                        <span data-i18n="yellow">زرد نئونی</span>
-                    </button>
                     <button class="theme-option" data-theme="blue">
                         <span class="theme-preview blue-theme"></span>
                         <span data-i18n="blue">آبی نئونی</span>
@@ -254,21 +246,113 @@
                         <span class="theme-preview red-theme"></span>
                         <span data-i18n="red">قرمز نئونی</span>
                     </button>
+                    <button class="theme-option" data-theme="purple">
+                        <span class="theme-preview purple-theme"></span>
+                        <span data-i18n="purple">بنفش نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="pink">
+                        <span class="theme-preview pink-theme"></span>
+                        <span data-i18n="pink">صورتی نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="orange">
+                        <span class="theme-preview orange-theme"></span>
+                        <span data-i18n="orange">نارنجی نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="cyan">
+                        <span class="theme-preview cyan-theme"></span>
+                        <span data-i18n="cyan">فیروزه‌ای نئونی</span>
+                    </button>
+                    <button class="theme-option" data-theme="gold">
+                        <span class="theme-preview gold-theme"></span>
+                        <span data-i18n="gold">طلایی</span>
+                    </button>
+                    <button class="theme-option" data-theme="white">
+                        <span class="theme-preview white-theme"></span>
+                        <span data-i18n="white">سفید</span>
+                    </button>
+                    <div class="theme-actions">
+                        <button id="theme-apply" type="button">اعمال رنگ</button>
+                        <button id="theme-cancel" type="button">لغو</button>
+                    </div>
+
                 </div>
 
-                <div class="section-header language-heading">
+
+
+<div class="section-header language-heading">
                     <h3 id="language-title">Language / زبان</h3>
                 </div>
                 <div class="language-options">
                     <button class="language-option" data-language="fa">🇮🇷 فارسی</button>
                     <button class="language-option" data-language="en">🇬🇧 English</button>
                 </div>
-                <p class="custom-save-note" id="custom-save-note">تنظیمات به‌صورت خودکار ذخیره می‌شوند.</p>
+                <div class="section-header language-heading">
+                    <h3 id="welcome-title">پیام خوشامدگویی ربات</h3>
+                </div>
+                <textarea id="welcome-message" rows="7" maxlength="3500"
+                    placeholder="متن پیام خوشامدگویی ربات را وارد کنید..."
+                    dir="auto"></textarea>
+                <div class="welcome-message-actions">
+                    <button id="welcome-preview" type="button">پیش‌نمایش</button>
+                    <button id="welcome-save" type="button">ذخیره پیام</button>
+                    <button id="welcome-reset" type="button">بازگردانی پیش‌فرض</button>
+                </div>
+                <pre id="welcome-preview-box" hidden></pre>
+                <p id="welcome-status" role="status"></p>
+
+
+
+<p class="custom-save-note" id="custom-save-note">تنظیمات به‌صورت خودکار ذخیره می‌شوند.</p>
+            </section>
+        </section>
+
+
+        <section class="page-section" id="page-panel-settings">
+            <section class="welcome">
+                <div><h2>اطلاعات پنل</h2><p>تنظیم اتصال و مانیتورینگ پنل</p></div>
+            </section>
+            <section class="panel-section customization-panel">
+                <div class="section-header language-heading">
+                    <h3>⚙️ اطلاعات پنل</h3>
+                </div>
+                <div id="panel-settings-form">
+                    <label>آدرس پنل</label>
+                    <input id="panel-url" type="url" placeholder="https://panel.example.com" dir="ltr">
+
+                    <label>زمان بررسی (ثانیه)</label>
+                    <input id="panel-interval" type="number" min="10" max="3600" value="60">
+
+                    <label>API Key / Token</label>
+                    <input id="panel-api-key" type="password" placeholder="برای حفظ کلید فعلی خالی بگذارید" dir="ltr" autocomplete="new-password">
+
+                    <button id="panel-settings-save" type="button">ذخیره اطلاعات پنل</button>
+                    <p id="panel-settings-status" role="status"></p>
+                </div>
+            </section>
+        </section>
+
+
+        <section class="page-section" id="page-notifications">
+            <section class="welcome">
+                <div><h2>اطلاع‌رسانی</h2><p>مدیریت پیام‌های عمومی وضعیت نودها در تلگرام</p></div>
+            </section>
+            <section class="panel-section customization-panel">
+                <div class="section-header language-heading">
+                    <h3>🔔 تنظیمات اطلاع‌رسانی عمومی</h3>
+                </div>
+                <div id="public-alert-form">
+                    <label for="public-alert-chat">لینک عمومی کانال یا گروه، یا شناسه عددی</label>
+                    <input id="public-alert-chat" type="text" placeholder="https://t.me/channel یا @username" dir="ltr">
+                    <button id="public-alert-save" type="button">ذخیره تنظیمات</button>
+                    <button id="public-alert-test" type="button">🧪 ارسال پیام آزمایشی</button>
+                    <p id="public-alert-status" role="status"></p>
+                </div>
+                <p>ربات باید در گروه عضو باشد یا در کانال دسترسی مدیر داشته باشد.</p>
             </section>
         </section>
 
         <footer>
-            <p>ZEUS MONITOR <span>•</span> VERSION 1.0.0</p>
+            <p>ZEUS MONITOR <span>•</span> VERSION 2.0.0</p>
             <p>POWERED BY ZEUS</p>
         </footer>
 
@@ -276,6 +360,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="js/app.js?v=11"></script>
+<script src="js/app.js?v=17"></script>
 </body>
 </html>

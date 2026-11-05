@@ -46,3 +46,10 @@ class MetricSnapshot(Base):
     memory_total: Mapped[float] = mapped_column(Float, default=0)
 
     nodes_json: Mapped[str] = mapped_column(Text, default="[]")
+
+
+class AppSetting(Base):
+    __tablename__ = "app_settings"
+
+    key: Mapped[str] = mapped_column(String(100), primary_key=True)
+    value: Mapped[str] = mapped_column(Text, nullable=False)
